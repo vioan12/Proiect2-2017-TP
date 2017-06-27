@@ -1,0 +1,369 @@
+﻿
+
+% preamble
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[document]{ragged2e}
+\usepackage{ulem}
+\usepackage{amsmath}
+\usepackage{color}
+\usepackage{ragged2e}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{amssymb, amsthm, amsmath, amsfonts}
+
+\usepackage{latexsym}
+\usepackage{url}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true}
+%% \usepackage{times}
+%% \usepackage{times}
+\usepackage{latexsym}
+\usepackage{url}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true}
+\usepackage{graphicx}
+\graphicspath{ {image/} }
+\usepackage{xcolor}
+\usepackage{listings}
+
+\definecolor{mGreen}{rgb}{0,0.6,0}
+\definecolor{mGray}{rgb}{0.5,0.5,0.5}
+\definecolor{mPurple}{rgb}{0.58,0,0.82}
+\definecolor{backgroundColour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{CStyle}{
+    backgroundcolor=\color{backgroundColour},   
+    commentstyle=\color{mGreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{mGray},
+    stringstyle=\color{mPurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2,
+    language=C
+}
+\begin{document}
+
+% top matter
+
+	\title{Tehnici de Programare\\Proiect}
+	\date{\large \today} 
+	\maketitle
+	\begin{tabbing}
+	\\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\ \\
+	\indent{\large Titlu:} \={\large \textit{A library for safe string manipulation.}}\\ \\
+	\indent{\large Profesor universitar:} \={\large Dr. Ing. Costin B\u{a}dic\u{a}}\\ \\
+	\indent{\large Asistent universitar:} \={\large Alex Becheru}\\ \\
+    \indent{\large Student:} \={\large Voiculescu Ioan-Valentin}\\ \\
+    \indent{\large Facultate: Automatic\u{a}, Calculatoare \c{s}i Electronic\u{a}}\\ \\
+    \indent{\large Anul: II}\\ \\
+    \indent{\large Specializarea: Calculatoare Rom\^{a}n\u{a}}\\ \\
+    \indent{\large Grupa: CR 2.2 B}\\ \\
+	\end{tabbing}
+	\newpage
+    \tableofcontents
+    \newpage
+
+% abstract
+\begin{abstract}
+Acest document prezint\u{a} obiectivele \c{s}i metodologia pentru dezvoltarea unei biblioteci pentru manipularea în condi\c{t}ii de siguranță a \c{ș}irurilor de caractere. 
+\end{abstract}
+
+\section{Declarac{t}ia problemei}
+\subsection{Titlu}
+\textit{A library for safe string manipulation.}
+\subsection {Introducere}
+\hspace{1em}
+\justifying
+Biblioteca cumprinde alternative pentru cele mai comune func\c{t}ii de manipulare a \c{s}irurilor: \textbf{strcat}, \textbf{strcpy}, \textbf{strlen}, \textbf{gets}, \textbf{strcmp}, \textbf{strchr} \c{s}i \textbf{strstr}.
+
+Func\c{t}iile de mai sus definite \^{i}n libraria \textcolor{green}{$ <string.h>$} au multe probleme de gestionare a memoriei acces\^{a}nd \c{s}i modific\^{a}nd loca\c{t}ii de memorie care nu apar\c{t}in \c{s}irului de caractere respectiv prelucrat cat \c{s}i alte diferite probleme. Acest fapt a determinat schimbarea de abordare asupra \c{s}irurilor de carctere \^{i}n biblioteca implementat\u{a}. 
+\pagebreak
+
+\section{Pseudocod al algoritmilor}
+\hspace{1em}
+\justifying
+\subsection {FUNC\c{T}IA stringlength}
+\begin{tabbing}
+1. $nr\leftarrow 0$\\
+2.\textbf { if} $str1!=NULL$\\
+3.\indent \textbf { while} $str1[nr]!=NULL$\\
+4.\indent \indent $nr\leftarrow nr + 1$\\
+5.\indent \textbf { end while}\\
+6.\textbf { end if}\\
+7.\textbf { return} $nr$\\
+\end{tabbing}
+
+\subsection{FUNC\c{T}IA stringconcatenate}
+\begin{tabbing}
+1. \textbf {if} $(str1!=NULL) \&\& (str2!=NULL)$\\
+2. \indent $n\_str1\leftarrow stringlength(str1)$\\
+3. \indent $MEM1\leftarrow mem\_aloc(str1)$\\
+4. \indent \textbf{if} $MEM1>stringlength(str1)+stringlength(str2)$\\
+5. \indent \indent \textbf {for} $i\leftarrow  n\_str1+stringlength(str2)+1$,  $j\leftarrow  stringlength(str1)+1$\textbf { to} $str1[j]!=NULL$ \textbf{do}\\
+6. \indent \indent \indent $str1[i]\leftarrow str1[j]$\\
+7. \indent \indent \textbf {end for}\\
+8. \indent \indent $str1[i]\leftarrow NULL$\\
+9. \indent \indent \textbf {for} $i\leftarrow n\_str1$ \textbf{ to} $n\_str1+stringlength(str2)$ \textbf{do}\\
+10. \indent \indent \ident $str1[i] \leftarrow str2[i-n\_str1]$\\
+11.\indent \indent \textbf {end for}\\
+12. \indent \textbf{else}\\
+13. \indent \indent PRINT  "EROARE! stringconcatenate:memoria alocata(\%dbyti) pt str1(\%s) este prea putina, mai sunt necesari \%dbyti"\\ 
+14. \indent \textbf{end if}\\
+15.\textbf { end if}\\
+\end{tabbing}
+
+
+\subsection {FUNC\c{T}IA stringcopy}
+\begin{tabbing}
+1. \textbf {if} $(str1!=NULL) \&\& (str2!=NULL)$\\
+2. \indent $MEM1\leftarrow mem\_aloc(str1)$\\
+3. \indent \textbf{if} $MEM1>stringlength(str2)$\\
+4. \indent \indent \textbf {for} $i\leftarrow  stringlength(str2)+1$,  $j\leftarrow  stringlength(str1)+1$\textbf { to} $str1[j]!=NULL$ \textbf{do}\\
+5. \indent \indent \indent $str1[i]\leftarrow str1[j]$\\
+6. \indent \indent \textbf {end for}\\
+7. \indent \indent $str1[i]\leftarrow NULL$\\
+8. \indent \indent \textbf {for} $i\leftarrow 0$ \textbf{ to} $stringlength(str2)$ \textbf{do}\\
+9. \indent \indent \indent \ident \ident $str1[i] \leftarrow str2[i]$\\
+10.\indent \indent \textbf {end for}\\
+11.\indent \textbf{else}\\
+12. \indent \indent PRINT  "EROARE! stringcopy:memoria alocata(\%dbyti) pt str1(\%s) este prea putina, mai sunt necesari \%dbyt"\\ 
+13. \indent \textbf{end if}\\
+14.\textbf { end if}\\
+\end{tabbing}
+
+\subsection {FUNC\c{T}IA filegetstringe}
+\begin{tabbing}
+1. $x\leftarrow 0$\\
+2. $sw\leftarrow 0$\\
+3. $i\leftarrow 0$\\
+4. \textbf {do}\\
+5. \indent SCAN FILE $nr[i]$\\
+6. \indent  $i\leftarrow i+1$\\
+7. \textbf {end while }$nr[i-1]!=10$\\
+8. $nr[i-1]\leftarrow NULL$\\
+9. \textbf {for} $j\leftarrow 0$ \textbf{ to} $nr[j]!=NULL$ \textbf{do}\\
+10. \indent $x\leftarrow x*10+nr[j]-48$\\
+11 \textbf {end for}\\
+12. $i\leftarrow 0$\\
+13. \textbf {do}\\
+14. \indent SCAN FILE $str1[i]$\\
+15. \indent  $i\leftarrow i+1$\\
+16. \textbf {end while}$(str1[i-1]!=10)\&\&(i<x)$\\
+17. \textbf{if} $str1[i-1]!=10$\\
+18. \indent $sw\leftarrow 1$\\
+19. \textbf{end if}\\
+20. $str1[i-1]\leftarrow NULL$\\
+21. $k=i\leftarrow 1$\\
+22. \textbf {for} $j\leftarrow 0$ \textbf{ to} $nr[j]!=NULL$ \textbf{do} $i j$\\
+23. \indent $str1[i]\leftarrow nr[j]$\\
+24. \textbf {end for}\\
+25. $str1[i]\leftarrow NULL$\\
+26. \textbf {if} $sw=0$\\
+27. \indent PRINT  "EROARE! filegetstring:memoria alocata(\%dbyti) pt str1(\%s) este prea putina au fost citite si memorate \%d caractere"\\
+28. \textbf {end if}\\
+\end{tabbing}
+
+\subsection {FUNC\c{T}IA stringcompare}
+\begin{tabbing}
+1. $x\leftarrow 0$\\
+2. \textbf{if} $(str1!=NULL) \&\& (str2!=NULL)$\\
+3. \indent $i\leftarrow -1$\\
+4. \indent $j\leftarrow -1$\\
+5. \indent \textbf {do}\\
+6. \indent \indent $i\leftarrow i+1$\\
+7. \indent \indent $j\leftarrow j+1$\\
+8. \indent \indent $x\leftarrow str1[i]-str2[j]$\\
+9. \indent \textbf {end while}$(str1[i]!=NULL) \&\& (str2[i]!=NULL) \&\& (x=0)$\\
+10. \textbf{end if}\\
+11. \textbf {return} $x$\\
+\end{tabbing}
+
+\subsection {FUNC\c{T}IA stringcharsearch}
+\begin{tabbing}
+1. \textbf{if} $(str1!=NULL) \&\& (c!=NULL)$\\
+2. \indent $i\leftarrow 0$\\
+3. \indent \textbf {while}$(str1[i]!=c) \&\& (str1[i]!=NULL)$\\
+4. \indent \indent $i\leftarrow i+1$\\
+5. \indent \textbf {end while}\\
+6. \indent \textbf{if} $str1[i]!=NULL$\\
+7. \indent \indent \textbf {return} $str1+i$\\
+8. \indent \textbf{end if}\\
+9. \textbf{end if}\\
+10.\textbf {return} $NULL$\\
+\end{tabbing}
+
+\subsection {FUNC\c{T}IA stringstringsearch}
+\begin{tabbing}
+1. $sw\leftarrow 0$\\
+2. \textbf{if} $(str1!=NULL) \&\& (str2!=NULL)$\\
+3. \indent \textbf {for} $i\leftarrow 0$ \textbf{ to} $str1[i]!=NULL$ \textbf{do}\\
+4. \indent \indent \textbf{if} $str2[0]=str1[i]$\\
+5. \indent \indent \indent \textbf{if} $stringlength(str2)<=stringlength(str1+i)$\\
+6. \indent \indent \indent \indent $sw\leftarrow 1$\\
+7. \indent \indent \indent \indent \textbf {for} $j\leftarrow 0$ \textbf{ to} $(str2[j]!=NULL) \&\& (str1[i+j]!=NULL) \&\& (sw=1)$\textbf{ do}\\
+8. \indent \indent \indent \indent \indent \textbf{if} $str2[j]!=str1[i+j]$\\
+9. \indent \indent \indent \indent \indent \indent $sw\leftarrow 0$\\
+10 \indent \indent \indent \indent \indent \textbf{end if}\\
+11.\indent \indent \indent \indent \textbf {end for}\\
+12.\indent \indent \indent \textbf{end if}\\
+13.\indent \indent \indent \textbf{if} $sw=1$\\
+14.\indent \indent \indent \indent \textbf {return} $str1+i$\\
+15.\indent \indent \indent \textbf{end if}\\
+16.\indent \indent \textbf{end if}\\
+17.\indent \textbf {end for}\\
+18.\textbf{ end if}\\
+19.\textbf { return $NULL$}\\
+\end{tabbing}
+
+\section{Proiectarea Aplica\c{t}iei}
+\subsection {Introducere}
+\hspace{1em}
+\justifying
+
+Am decis ca pentru buna gestionare a memoriei alocate pentru un sir de caractere sa memorez efectiv dupa terminarea sirului de caractere memoria alocata pt sirul respectiv, lucru care va face folosirea lui mult mai sigur\u{a}.
+
+Lungimea totala de meorie alocata pt un sir de carcatere nu este disponibila in orice punct de executie al programului. Am incercat acest lucru cu \textbf{sizeof()} dar aceasta functie are dezavantajele ei. Spre exemplu daca voi apela aceasta functie cu un pointer care pointeaza catre un  \textit{char}, avand ca valoare o adresa de memorie reprezentata pe 8 byti, functia \textbf{sizeof()} va returna valoarea reprezentarii in biti a priei cifre din acea adresa, adica 4, deoarece un numar in hexazecimal este reprezentat pe 4 biti, deci nu mi-era de nici un folos \textbf{sizeof()}.
+
+Functiile definite in libraria \textcolor{green}{$ <string.h>$} nu tin cont de cata memorie este alocata pentru sirul de caractere care-l prelucreaza. Spre exemplu \textbf{strcat} concateneaza carcater cu caracter, in cazul in care sirul transmis prin primul parametru este prea mic, pana apare eroarea \textit{Segmentation fault}, deci functia \textbf{strcat} are o eficienta deplorabila.
+
+In Figura1 puteti vedea pt sirul de caractere \textit{c1} si memoria alocata 420 byti reprezentarea sa in memorie folosita de catre programul meu, unde \textit{n} este lungimea sirului \textit{c1}.
+
+\justifying
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=12cm]{proiect2}
+    \caption{Alocare in memorie.}
+    \label{fig:img1}
+\end{figure}
+
+\subsection {FUNC\c{T}IA stringlength}
+\hspace{1em}
+\justifying
+Funcția va returna un \textit{int} și primește ca parametru \textit{str1}, o adresă iar la adresa respectivă se va afla primul element al unui șir de caractere.
+
+Funcția va parcurge șirul, până când elementul curent este diferit de \textit{NULL}. Parcurgerea va fi contorizată \^{i}n variabila \testit{nr}.
+
+\subsection {FUNC\c{T}IA stringconcatenate}
+\hspace{1em}
+\justifying
+Funcția nu va returna nimic și primește ca parametrii două adrese \textit{str1},\textit{str2}, către două șiruri de caractere. 
+
+Întâi se va testa dacă pentru primul șir de caractere este destula memorie alocată astfel încât să poată fi alipit șirul al doilea de caractere la primul șir. Apoi funcția va deplasa caracterele care indică câtă memorie este alocată pentru șirul de caractere \textit{str1}, iar după se va face efectiv alipirea caracterelor, caracter cu caracter.
+
+\subsection {FUNC\c{T}IA stringcopy}
+\hspace{1em}
+\justifying
+Funcția nu va returna nimic și primește ca parametrii două adrese către două șiruri de caractere. 
+
+\^{I}ntâi se va testa dacă este destule memorie alocat\u{a} pentru primul șir de caractere \textit{str1} pentru a fi copiat peste acest șir șirul al doilea de caractere. După se vor deplasa caracterele care indică câtă memorie este alocata pentru primul șir de caractere. Apoi se va face copierea șirului al doilea de caractere în primul șir copiind caracter cu caracter.
+
+\subsection {FUNC\c{T}IA filegetstring}
+\hspace{1em}
+\justifying
+Funcția nu va returna nimic și va primi ca parametrii o adresă și un șir de caractere.
+
+Func\c{t}ia va citi din fișierul cu numele șirului \textit{file\_nm}, de pe prima linie memoria alocată pentru șirul de caractere aflat pe al doilea rând în fișierul respectiv. Apoi se va citi \c{s}irul de caractere țintă aflat în fișier \c{s}i se va memora in sirul de caractere \textit{str1}.
+
+\subsection {FUNC\c{T}IA mem\_aloc}
+\hspace{1em}
+\justifying
+
+Funcția va returna un \textit{int} și primește ca parametru o adresă.
+
+Funcția va returna câtă memorie este alocată pentru șirul de caractere care începe de la adresa \textit{str1}.
+
+\subsection {FUNC\c{T}IA stringcompare}
+\hspace{1em}
+\justifying
+
+Funcția va returna un \textit{int} și primește ca parametrii două adrese. 
+
+Funcția va compara \c{s}irurile de caractere care încep la adresele \textit{str1} \c{s}i \textit{str2} caracter cu caracter cat timp cele două șiruri nu se termină și diferența dintre caracterele curente este aceeași. La final funcția va returna diferența dintre cele două caractere \textit{str1[i]} \c{s}i \textit{str2[i]}.
+
+\subsection {FUNC\c{T}IA stringcharsearch}
+\hspace{1em}
+\justifying
+
+Funcția va returna o adresă și primește ca parametrii o adresă \textit{str1} și un caracter \textit{c}. 
+
+Funcția va căuta caracterul \textit{c} în șirul de caractere \textit{str1} cat timp caracterul \textit{c} este diferit de caracterul curent \textit{str1[i]} și nu se termină șirul de caractere \textit{str1}. Funcția poate returna adresa la care se află caracterul \textit{c} în caz în care este găsit sau \textit{NULL} în caz contrar.
+
+\subsection {FUNC\c{T}IA stringstringsearch}
+\hspace{1em}
+\justifying
+Funcția va returna o adresă și primește ca parametrii două adrese \textit{str1} \c{s}i \textit{str2}.
+
+Funcția va căuta în prima etapă dacă primul caracter \textit{str2[0]} al șirului căutat este egal cu vreun caracter din șirul în care se caută \textit{str1}. În caz afirmativ se vor verifica dacă și ce celelalte caractere are șirului \textit{str2} se regăsesc în \c{s}irul de caractere \textit{str1}. Caracterele din șirul \textit{str2} trebuie să se afle pe poziții consecutive în șirul \textit{str1}. Funcția va returna adresa de la care este regăsit șirul căutat în șirul \textit{str1} iar \textit{NULL} în cazul în care șirul căutat nu este regăsit în șirul \textit{str1}.
+
+\newpage
+\section{Codul Surs\u{a}}
+
+\subsection{main.c}
+
+\lstinputlisting[style=CStyle]{main.c}
+\newpage
+\newpage
+\subsection{head.h}
+
+\lstinputlisting[style=CStyle]{head.h}
+\newpage
+\subsection{functii.c}
+
+\lstinputlisting[style=CStyle]{functii.c}
+\newpage
+\subsection{generare.c}
+
+\lstinputlisting[style=CStyle]{generare.c}
+\newpage
+
+
+\section{Input si Output}
+Datele de intrare se gasesc in 3 fisiere.
+\subsection{Input}
+\subsubsection{a.txt}
+\^{I}n acest fișier se găsește pe prima linie un număr care reprezintă memoria alocată pentru primul șir de caractere iar pe a doua linie este efectiv șirul de caractere. După prima și a doua linie este necesar apăsarea tastei \textit{Enter}.
+
+\lstinputlisting[style=CStyle]{a.txt}
+
+\subsubsection{b.txt}
+\^{I}n acest fișier se găsește pe prima linie un număr care reprezintă memoria alocată pentru cel de-al doilea șir de caractere iar pe a doua linie este efectiv șirul de caractere. După prima și a doua linie este necesar apăsarea tastei \textit{Enter}.
+
+\lstinputlisting[style=CStyle]{b.txt}
+
+\subsection{in.txt}
+\^{I}n acest fişier se găsesc indicele comenzilor pe care programul le va executa asupra celor două şiruri de caractere.
+
+\lstinputlisting[style=CStyle]{in.txt}
+
+\subsection{Output}
+\subsubsection{out.txt}
+În acest fișier se găsesc rezultatul comenzilor cât și indicele a cata comanda este. Este foarte importantă respectarea formatului din exemplul dat.
+Exista urmatoarele optiuni din Figura2.
+\justifying
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=12cm]{Untitled}
+    \caption{Optiuni.}
+    \label{fig:img1}
+\end{figure}
+
+\lstinputlisting[style=CStyle]{out.txt}
+
+\newpage
+\section{Compatibilitate}
+Proiectul a fost realizat in sitemul de operare \textit{Windows}. Compilatorul folosit este \textit{GNU GCC Compiler} cu standardul \textit{C99}.
+
+
+\end{document}
