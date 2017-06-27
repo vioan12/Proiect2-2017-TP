@@ -4,7 +4,7 @@ CFLAGS = -c -std=c99 -Wall
 all: Proiect_TP
 
 Proiect_TP: main.o functii.o generare.o
-	$(CC) main.o functii.o -o Proiect_TP #linking
+	$(CC) main.o functii.o generare.o -o Proiect_TP #linking
 
 main.o: main.c
 	$(CC) $(CFLAGS) main.c #compile
